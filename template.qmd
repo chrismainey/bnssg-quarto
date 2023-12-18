@@ -64,7 +64,22 @@ Here we have some context
 
 ## Data
 
-Here is a description of the data
+Here is a a table of data that can be expanded upon clicking
+
+:::{.callout-note collapse=true  icon=true}
+## Call out, collapsable table (click to expand)
+
+my table
+```{r}
+#| label: table-output
+#| echo: false
+dat <- head(mtcars, 10)
+tab <- dat |> 
+  gt()
+tab
+```
+:::
+
 
 ## Viualisations - interactive maps
 
@@ -337,6 +352,42 @@ leaflet() %>%
 ## Viualisations - BNSSG theme
 
 Here is a line chart using the bnssg themes packages:
+
+## Visualisations - plots in tabsets
+
+
+```{r}
+#| label: cars-plots
+theme_set(theme_bw())
+
+multi_plots <- mtcars %>%
+  pivot_longer(cols = where(is.numeric)) %>% 
+  group_nest(name, keep = T) %>% 
+  deframe() %>% 
+  map(., function(x){ggplot(x,aes(x=value))+geom_histogram() + 
+      labs(title = paste0("Histogram for ",unique(x$name)))}) 
+
+```
+
+
+::: {.panel-tabset}
+```{r pod-tabsets}
+#| results: asis
+#| fig-width: 14
+#| fig-height: 6
+
+iwalk(multi_plots, ~ {
+  cat('## ', .y, '\n\n')
+  
+  print(.x)
+  
+  cat('\n\n')
+  
+})
+
+```
+
+:::
 
 ## Conclusions
 
