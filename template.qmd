@@ -28,6 +28,7 @@ editor: source
 #| label: libraries
 
 # call your libraries here
+source(here::here("R/00_libraries.R"))
 ```
 
 
@@ -65,11 +66,275 @@ Here we have some context
 
 Here is a description of the data
 
-## Analysis
+## Viualisations - interactive maps
 
-Here is a map:
+This section contains examples for creating maps using the leaflet package in R. What's covered:
+
+* How to add colour-coded polygons
+* Have multiple polygon layers on the same map
+* Add basic, cluster, or icon markers
+
+See official [Leaflet for R](https://rstudio.github.io/leaflet/) documentation for more info.
+
+A leaflet map can be saved as part of an interactive R output (ex: Markdown, Flexdash, Quarto, Shiny), as is the case in this document, or on its own as an HTML widget using [saveWidget()](https://www.geeksforgeeks.org/how-to-save-a-leaflet-map-as-a-html-widget-in-r/).
+
+``` {r}
+#| label: data-for-maps
+
+## Read in shapefiles
+
+# LSOA
+# shape file from the ONS Geography Portal
+lsoa_shp <- read_sf("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/services/LSOA_2011_Boundaries_Super_Generalised_Clipped_BSC_EW_V4/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson") |> 
+  filter(
+    grepl("Bristol", LSOA11NM)
+  ) |> 
+  mutate(
+    area_binned = ntile(Shape__Area, n = 6)
+  )
+  
+## Read in data 
+
+# Heat map data (dummy data table)
+data <- lsoa_shp |> 
+  filter(str_detect(LSOA11NM, "Bristol")) |> 
+  select(LSOA11CD) |> 
+  mutate(
+    value1 = sample(1:100, 263, replace = T),
+    value2 = sample(1:100, 263, replace = T)
+  ) |> 
+  as_tibble()
 
 
+## Markers - these must contain latitude and longitude variables
+markers <- readRDS(here::here("data/sample_postcodes.rds"))
+
+```
+
+### Heat map with basic markers
+
+Lots of provider tiles (ie. background map) to choose from, I like CartoDB ones but you can find all the options here: [https://leaflet-extras.github.io/leaflet-providers/preview/](https://leaflet-extras.github.io/leaflet-providers/preview/)
+
+```{r}
+#| fig-height: 6
+#| label: heat-map-basic-marker
+
+# Join the shapefiles and data - use inner join to also filter shapefiles data
+lsoa_shp_data <- inner_join(lsoa_shp, data)
+
+# create colour palette for heat map for value 1
+cols_val1 <- colorNumeric(palette = "BuPu",
+                          domain = lsoa_shp_data$value1)
+
+markers_subset <- sample_n(
+  filter(markers, itl == "E06000023"), 
+  5)
+
+# Create map
+leaflet() %>%
+  
+  # can use default leaflet tiles or specify provider
+  addProviderTiles(provider = providers$CartoDB.Voyager) %>%
+  
+  # add LSOA shapes with colour coding
+  addPolygons(data = lsoa_shp_data,
+              fillColor = ~cols_val1(value1),
+              color = "black",
+              stroke = T,
+              weight = 1,
+              fillOpacity = 0.6,
+              
+              #option to highlight area when hovering over it
+              highlightOptions = highlightOptions(color = "white",
+                                                  weight = 2,
+                                                  bringToFront = T),
+              
+              #pop-up text
+              popup = paste0("LSOA: ", lsoa_shp_data$lsoa11cd,
+                             "<br> Value: ", lsoa_shp_data$value1)
+              
+  ) %>%
+  
+  # add legend for heat map
+  addLegend("bottomleft", 
+            pal = cols_val1, 
+            values = lsoa_shp_data$value1,
+            title = "Value 1",
+            opacity = 0.6) %>% 
+  
+  # markers
+  addMarkers(data = markers_subset,
+             lat = ~lat, 
+             lng = ~long, 
+             popup = ~paste0("This is a marker for ", markers_subset$pcd, 
+                             "<br> It is in LSOA ", markers_subset$lsoa11),
+             label = ~pcd)
+
+```
+
+
+### Heat map with multiple layers
+
+```{r}
+#| fig-height: 6
+#| label: heat-map-multiple-layers
+
+# Create a new palette for value 2
+# If your values have the same scale, you could use the same palette/legend
+cols_val2 <- colorNumeric(palette = "YlOrRd",
+                          domain = lsoa_shp_data$value2)
+
+leaflet() %>%
+  addProviderTiles(provider = providers$CartoDB.Voyager) %>%
+  
+  ## Layer 1 polygons
+  addPolygons(data = lsoa_shp_data,
+              fillColor = ~cols_val1(value1),
+              color = "black",
+              stroke = T,
+              weight = 1,
+              fillOpacity = 0.6,
+              
+              highlightOptions = highlightOptions(color = "white",
+                                                  weight = 2,
+                                                  bringToFront = T),
+              
+              popup = paste0("LSOA: ", lsoa_shp_data$lsoa11cd,
+                             "<br> Value 1: ", lsoa_shp_data$value1),
+              
+              group = "Value 1" #for layers
+              
+  ) %>%
+  
+  ## Layer 2 polygons
+  addPolygons(data = lsoa_shp_data,
+              fillColor = ~cols_val2(value2),
+              color = "black",
+              stroke = T,
+              weight = 1,
+              fillOpacity = 0.6,
+              
+              highlightOptions = highlightOptions(color = "white",
+                                                  weight = 2,
+                                                  bringToFront = T),
+              
+              popup = paste0("LSOA: ", lsoa_shp_data$lsoa11cd,
+                             "<br> Value 2: ", lsoa_shp_data$value2),
+              
+              group = "Value 2" #for layers
+              
+  ) %>%
+  
+  # Add legends for each layer
+  addLegend("bottomleft", 
+            pal = cols_val2, 
+            values = lsoa_shp_data$value2,
+            title = "Value 2",
+            opacity = 0.6) %>% 
+  
+  addLegend("bottomleft", 
+            pal = cols_val1, 
+            values = lsoa_shp_data$value1,
+            title = "Value 1",
+            opacity = 0.6) %>% 
+  
+  addLayersControl(baseGroups = c("Value 1", "Value 2"),
+                   options = layersControlOptions(collapsed = FALSE))
+
+
+```
+
+
+### Map of LSOAs with cluster markers
+
+``` {r}
+#| fig-height: 6
+#| label: cluster-markers
+
+# Assign colours to localities
+cols_loc <- colorFactor(c("#00bf9c", "#00675e", "#49cc3b", "#096830", "#1191D1", "#004890"),
+                        domain = lsoa_shp$area_binned)
+
+leaflet() %>% 
+  addProviderTiles(provider = providers$CartoDB.Voyager) %>% 
+  
+  addPolygons(data = lsoa_shp,
+              fillColor = ~cols_loc(area_binned),
+              color =  "white",
+              stroke = T,
+              weight = 2,
+              fillOpacity = 0.7) %>%
+
+  addLegend("bottomleft", 
+            opacity = 0.8,
+            pal = cols_loc, 
+            values = lsoa_shp$area_binned,
+            title = "BNSSG Localities") %>% 
+    
+  addMarkers(data = markers,
+             lat = ~lat, 
+             lng = ~long, 
+             popup = ~paste0("This is a marker for ", markers$pcd),
+             label = ~pcd, 
+             clusterOptions = markerClusterOptions())
+
+```
+
+
+### Map of LSOAs with icon markers
+
+You can add icons to markers using addAwesomeMarkers. The map below uses library "fa", ie. [Font Awesome icons](https://fontawesome.com/v4/icons/), but there are other sources available. For Font Awesome, note that the ones compatible with leaflet are version 4. 
+
+``` {r}
+#| fig-height: 6
+#| label: icon-markers
+
+gps <- sample_n(markers, 10)
+hosps <- sample_n(markers, 3)
+carehomes <- sample_n(markers, 10)
+
+leaflet() %>% 
+  addProviderTiles(provider = providers$CartoDB.Voyager) %>% 
+  
+  addPolygons(data = lsoa_shp,
+              fillColor = ~cols_loc(area_binned),
+              color =  "white",
+              stroke = T,
+              weight = 2,
+              fillOpacity = 0.7) %>%
+
+  addLegend("bottomleft", 
+            opacity = 0.8,
+            pal = cols_loc, 
+            values = lsoa_shp$area_binned,
+            title = "BNSSG Localities") %>% 
+
+  addAwesomeMarkers(data = gps, lat = ~lat,  lng = ~long, label = "GP",
+                    icon = awesomeIcons(icon = "user-md",
+                                        library = "fa",
+                                        markerColor = "purple"),
+                    group = "GP") %>% 
+
+  addAwesomeMarkers(data = hosps, lat = ~lat,  lng = ~long, label = "Hospital",
+                    icon = awesomeIcons(icon = "h-square",
+                                        library = "fa",
+                                        markerColor = "red"),
+                    group = "Hospital") %>% 
+  
+  addAwesomeMarkers(data = carehomes, lat = ~lat,  lng = ~long, label = "Care Home",
+                    icon = awesomeIcons(icon = "home",
+                                        library = "fa",
+                                        markerColor = "white"),
+                    group = "Care Home") %>% 
+  
+    addLayersControl(overlayGroups = c("GP", "Hospital", "Care Home"),
+                    options = layersControlOptions(collapsed = FALSE))
+  
+  
+
+```
+
+## Viualisations - BNSSG theme
 
 Here is a line chart using the bnssg themes packages:
 
