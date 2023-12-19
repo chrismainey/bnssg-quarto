@@ -26,7 +26,7 @@ Before proceeding, make sure your "Terminal" options are correctly set. To do th
 3. Select **OK**
 4. **Tools > Terminal > New Terminal**
 
-The template can be installed using the below command in the Terminal tab in RStudio. A quirk is that you often can't copy and paste with Ctrl+V into a terminal, you have to right click and press paste, then Enter.
+The template can be installed using the below command in the Terminal tab in RStudio. A quirk is that you often can't copy and paste with Ctrl+V into a terminal, you have to right click and press paste, then Enter or press Shift+Insert.
 
 ```{bash}
 #| eval: false
@@ -37,7 +37,7 @@ quarto use template nhs-bnssg-analytics/bnssg-quarto
 
 6. The terminal will then ask for a `? Directory name:`, which you cannot leave blank. Give a sensible name to the folder you want the template files to be downloaded into, and press Enter. Files should then download.
 
-7. Go to the location of your new folder, open `MyQuartoTest.qmd` in R and that's your template ready to go! You might need to run `install.packages` first on a few packages if they've not been installed before.
+7. Go to the location of your new folder, open `[DirectoryName].qmd` in R and that's your template ready to go! You might need to run `install.packages` first on a few packages if they've not been installed before.
 
 ### Using GitHub Desktop
 
