@@ -6,6 +6,15 @@
 This repository provides a quarto template and a project structure to
 support BNSSG analytical teams to use R.
 
+## Incorporating the template in a project
+
+Begin the project (“New project”) and create the preferred file and
+folder structure. Basic standard structures include a “data” folder (for
+non-sensitive input data), an “R” folder (for R scripts).
+
+When ready, follow the instructions in the next section which will
+generate your “outputs” folder (or something with a similar name).
+
 ## Installation
 
 ### Using the Terminal
@@ -33,8 +42,8 @@ quarto use template nhs-bnssg-analytics/bnssg-quarto
 
 6.  The terminal will then ask for a `? Directory name:`, which you
     cannot leave blank. Give a sensible name to the folder you want the
-    template files to be downloaded into, and press Enter. Files should
-    then download.
+    template files to be downloaded into (like **“outputs”**), and press
+    Enter. Files should then download.
 
 7.  Go to the location of your new folder, open `[DirectoryName].qmd` in
     R and that’s your template ready to go! You might need to run
