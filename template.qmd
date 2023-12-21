@@ -9,7 +9,7 @@ format:
     toc_float: true
     theme: cosmo
     mainfont: Arial
-    css: data/styles.css
+    css: styles.css
     margin-width: 50px
     page-width: 15
     body-width: 2000px
@@ -28,7 +28,12 @@ editor: source
 #| label: libraries
 
 # call your libraries here
-source(here::here("R/00_libraries.R"))
+library(tidyverse) #data manipulation
+library(janitor) #clean_names
+library(sf) #import geography files (shapes)
+library(leaflet) #for mapping
+library(RColorBrewer) #for colour palette
+library(gt) # for printing tables
 ```
 
 
@@ -42,13 +47,13 @@ knitr::opts_chunk$set(
                  message = FALSE
                 )
 
-knitr::include_graphics("data/bnssg_logo.png")
+knitr::include_graphics("bnssg_logo.png")
 ```
 
 ```{r}
 #| label: logo
 htmltools::img(
-  src =  "data/bnssg_logo.png", 
+  src =  "bnssg_logo.png", 
   alt = 'logo', 
   style = 'position:fixed; top:0; right:0; padding:10px; width: 20vw'
 )
@@ -122,7 +127,7 @@ data <- lsoa_shp |>
 
 
 ## Markers - these must contain latitude and longitude variables
-markers <- readRDS(here::here("data/sample_postcodes.rds"))
+markers <- readRDS(here::here("sample_postcodes.rds"))
 
 ```
 
