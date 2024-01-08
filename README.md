@@ -6,6 +6,16 @@
 This repository provides a quarto template and a project structure to
 support BNSSG analytical teams to use R.
 
+## Version number
+
+This template is version 0.0.1.
+
+### Latest updates
+
+- contains an example of alternative text
+- contains bnssg theme and colour functions (until they are packaged up
+  separately)
+
 ## Incorporating the template in a project
 
 Begin the project (“New project”) and create the preferred file and
