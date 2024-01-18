@@ -8,10 +8,12 @@ support BNSSG analytical teams to use R.
 
 ## Version number
 
-This template is version 0.0.1.
+This template is version 0.0.2.
 
 ### Latest updates
 
+- 2024-01-18 added bnssg.pptx powerpoint template for making bnssg
+  themed PowerPoints from quarto
 - contains an example of alternative text
 - contains bnssg theme and colour functions (until they are packaged up
   separately)
