@@ -112,6 +112,14 @@ lsoa_shp <- read_sf("https://services1.arcgis.com/ESMARspQHYMw9BZ9/arcgis/rest/s
   mutate(
     area_binned = ntile(Shape__Area, n = 6)
   )
+
+# # If using Shapefiles saved in BNSSG folders, use the following:
+# shp <- read_sf(dsn = "GIS folder path", 
+#                layer = "shapefiles name") %>% 
+#   
+#   # transform to st which uses lat/long data
+#   st_transform("+proj=longlat +datum=WGS84")
+
   
 ## Read in data 
 
