@@ -17,9 +17,11 @@ This repository provides a quarto template and a project structure to support BN
 
 ## Version number
 
-This template is version 0.0.2.
+This template is version 0.0.3.
 
 ### Latest updates
+
+* 2024-04-18 moves the BNSSG logo to above the TOC rather than in the top right of the html
 
 * 2024-01-18 added bnssg.pptx powerpoint template for making bnssg themed PowerPoints from quarto
 * contains an example of alternative text

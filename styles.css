@@ -33,6 +33,13 @@ h4 {
   font-family: Arial;
 }
 
+#TOC {
+  background-image: url("bnssg_logo.png");
+  background-size: contain;
+  padding-top: 120px !important;
+  background-repeat: no-repeat;
+}
+
 .header-section-number {
   font-size: 26;
   color: #003087;

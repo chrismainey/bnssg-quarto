@@ -8,13 +8,18 @@ support BNSSG analytical teams to use R.
 
 ## Version number
 
-This template is version 0.0.2.
+This template is version 0.0.3.
 
 ### Latest updates
 
+- 2024-04-18 moves the BNSSG logo to above the TOC rather than in the
+  top right of the html
+
 - 2024-01-18 added bnssg.pptx powerpoint template for making bnssg
   themed PowerPoints from quarto
+
 - contains an example of alternative text
+
 - contains bnssg theme and colour functions (until they are packaged up
   separately)
 

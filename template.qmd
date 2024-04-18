@@ -46,18 +46,8 @@ knitr::opts_chunk$set(
                  warning = FALSE,
                  message = FALSE
                 )
-
-knitr::include_graphics("bnssg_logo.png")
 ```
 
-```{r}
-#| label: logo
-htmltools::img(
-  src =  "bnssg_logo.png", 
-  alt = 'logo', 
-  style = 'position:fixed; top:0; right:0; padding:10px; width: 20vw'
-)
-```
 
 ## Introduction
 
