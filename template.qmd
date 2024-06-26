@@ -361,52 +361,70 @@ Note, the functions below are taken from a BNSSG GitHub repo that is ni the proc
 ```{r}
 #| label: branding-functions
 
-bnssgtheme <- function(base_size = 12, base_family = "sans",base_colour = "black") {
-  theme_bw() %+replace% theme(
-  axis.title.x = element_text(size = 16, color = '#003087', face = 'bold', family = "sans", margin = margin(t = 0, r = 20, b = 0, l = 0)), #x Axis Titles
-  axis.title.y = element_text(size = 16, color = '#003087', angle = 90, face = 'bold', family = "sans", margin = margin(t = 0, r = 20, b = 0, l = 0)), #y Axis Titles
+bnssgtheme <- function(base_size = 12, base_family = "sans",base_colour = "black"){theme_bw() %+replace% theme(
+  axis.title.x = element_text(size = 16, color = '#1c1f63', face = 'bold', family = "sans", margin = margin(t = 0, r = 20, b = 0, l = 0)), #x Axis Titles
+  axis.title.y = element_text(size = 16, color = '#1c1f63', angle = 90, face = 'bold', family = "sans", margin = margin(t = 0, r = 20, b = 0, l = 0)), #y Axis Titles
   axis.text = element_text(size = 12,  family = "sans", color = 'black'), #Axis text
   panel.border = element_blank(), #remove plot border
   panel.grid.major.x = element_blank(), #no major vertical lines
   panel.grid.major.y = element_line(linetype = 'dotted', size = 1), #dotted major horizontal lines
   panel.grid.minor = element_blank(), #no minor lines
-  legend.position = "top", #legend on top
   legend.justification='left', #legend left
   legend.direction='horizontal', #legend to be horizontal
   legend.title = element_blank(), #No legend title
   legend.text = element_text(size = 12, family = "sans",),
   legend.key.size = unit(0.3, "cm"),
-  plot.title = element_text(size = 16, color = '#003087', face="bold", margin = margin(b = 10, t=10), hjust=0),
-  plot.subtitle = element_text(size = 10, margin = margin(b = 10), hjust=0),
+  plot.title = element_text(size = 16, color = '#1c1f63', face="bold", margin = margin(b = 10, t=10), hjust=0),
+  plot.subtitle = element_text(size = 10, margin = margin(b = 10), hjust=0, color = "grey20"),
   # Customize facet title appearance
   strip.background = element_blank(),  # Set background to white
-  strip.text = element_text(face = "bold", family = "sans", size = 12)  # Set font to Arial 12 for facet titles
-) 
+  strip.text = element_text(face = "bold", family = "sans", size = 12),  # Set font to Arial 12 for facet titles
+  plot.title.position = "plot", #align to left of plot not y-axis
+  legend.position = "top", #legend position to top
+  legend.location = "plot") 
 }
 
 
-bnssgcols <- c(`white` = "#FFFFFF",`light grey` = "#999999",`light pink` = "#D093B6",`mid pink` = "#8d488d",`light blue` = "#8AC0E5",`dark pink` = "#853358",
-               `mid blue` = "#2472AA",`dark blue` = "#003087",`dark grey` = "#333333")
+## Colour Functions ####
 
-##Tells R Where to look for color codes, from the name
+bnssg_colours <- c(
+  `white`           = "#FFFFFF",
+  `midnight_blue`   = "#1C1F62",
+  `dark_violet`     = "#D091FD",
+  `royal_blue`      = "#045EDA",
+  `grass_green`     = "#008247",
+  `brilliant_purple`= "#8F00B6",
+  `vivid_blue`      = "#049FC1",
+  `lime_green`      = "#9EF101",
+  `teal`            = "#73D4D3")
+
 bnssg_cols <- function(...) {
   cols <- c(...)
   
   if (is.null(cols))
-    return (bnssgcols)
+    return (bnssg_colours)
   
-  bnssgcols[cols]
+  bnssg_colours[cols]
 }
+
 
 ##Set colour 'names'scheme' names:
 bnssg_palettes <- list(
-  "main"  = bnssg_cols("light grey", "light pink", "mid pink", "light blue", "mid blue", "dark blue", "dark grey","dark pink"),
-  "pgb" = bnssg_cols("dark pink", "mid pink", "light pink", "light grey", "light blue", "mid blue", "dark blue"),
-  "pgblite" = bnssg_cols("dark pink", "light grey", "dark blue"),
-  "pink" = bnssg_cols("dark pink", "mid pink", "light pink"),
-  "blue" = bnssg_cols("dark blue", "mid blue", "light blue"),
-  "mapcol" = bnssg_cols("dark blue", "mid blue", "light blue","light grey")
-)
+  "main"  = bnssg_cols("midnight_blue", "dark_violet", "royal_blue", "grass_green", "brilliant_purple",
+                       "vivid_blue", "lime_green", "teal"),
+  "blpkgrn" = c("#1C1F62", "#045EDA", "#0DCFFA", "#D091FD", "#8F00B6", "#008080", "#35FFA4", "#9EF101"),
+  "blgrn" = c("#1C1F62", "#045EDA", "#0DCFFA", "#E5FFB5", "#005730"  ),
+  "blpk" = c("#1C1F62","#045EDA","#0DCFFA","#D091FD", "#8F00B6"),
+  "pkgrn" = c("#D091FD","#8F00B6", "#008080", "#9EF101","#005730"),
+  "blue_3" = c("#1C1F62","#045EDA", "#0DCFFA"),
+  "blue_5" = c("#1C1F62","#045EDA", "#0DCFFA", "#888BDD","#0346A3"),
+  "pink_5" = c("#420272", "#8F00B6", "#F3C4FF", "#E06CFF", "#CD11FF"),
+  "pink_3"= c("#420272", "#8F00B6", "#F3C4FF"),
+  "green_5" = c("#003B3D", "#008247","#E5FFB5","#00AD5F","#54B7B7"),
+  "green_3" = c("#003B3D", "#008247","#E5FFB5")
+  )
+
+
 
 ##Function so that the colours can be found from the scheme name
 bnssg_pal <- function(palette, reverse = FALSE, ...) {
@@ -417,7 +435,8 @@ bnssg_pal <- function(palette, reverse = FALSE, ...) {
   colorRampPalette(pal, ...)
 }
 
-scale_colour_bnssg <- function(palette = "main", discrete = TRUE, reverse = FALSE, ...) {
+
+scale_color_bnssg <- function(palette = "main", discrete = FALSE, reverse = FALSE, ...) {
   pal <- bnssg_pal(palette = palette, reverse = reverse)
   
   if (discrete) {
