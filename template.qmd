@@ -361,7 +361,7 @@ Note, the functions below are taken from a BNSSG GitHub repo that is ni the proc
 ```{r}
 #| label: branding-functions
 
-bnssgtheme <- function(base_size = 12, base_family = "sans",base_colour = "black"){theme_bw() %+replace% theme(
+theme_bnssg <- function(base_size = 12, base_family = "sans",base_colour = "black"){theme_bw() %+replace% theme(
   axis.title.x = element_text(size = 16, color = '#1c1f63', face = 'bold', family = "sans", margin = margin(t = 0, r = 20, b = 0, l = 0)), #x Axis Titles
   axis.title.y = element_text(size = 16, color = '#1c1f63', angle = 90, face = 'bold', family = "sans", margin = margin(t = 0, r = 20, b = 0, l = 0)), #y Axis Titles
   axis.text = element_text(size = 12,  family = "sans", color = 'black'), #Axis text
@@ -383,6 +383,8 @@ bnssgtheme <- function(base_size = 12, base_family = "sans",base_colour = "black
   legend.position = "top", #legend position to top
   legend.location = "plot") 
 }
+
+bnssgtheme <- theme_bnssg
 
 
 ## Colour Functions ####
